@@ -6,17 +6,17 @@ exports.register = async (req, res) => {
   try {
     const { phone, password } = req.body;
     
-    // 验证手机号和密码
-    if (!isValidPhone(phone) || !isValidPassword(password)) {
-      return res.status(400).json({ errno: 30003, errormsg: "无效的手机号或密码" });
-    }
+    // 验证手机号和密码，前端验证
+    // if (!isValidPhone(phone) || !isValidPassword(password)) {
+    //   return res.status(400).json({ errno: 30003, errormsg: "无效的手机号或密码" });
+    // }
 
-    const existingUser = await User.findByPhone(phone);
+    const existingUser = await User.findOne({ where: { phone } });
     if (existingUser) {
       return res.status(400).json({ errno: 30001, errormsg: "用户已经存在" });
     }
 
-    await User.create(phone, password);
+    await User.create({ phone, password });
     res.json({ errno: 0, errormsg: "注册成功" });
   } catch (error) {
     logger.error('注册失败', { error });
