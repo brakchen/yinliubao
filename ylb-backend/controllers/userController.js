@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
+const { UserStatus } = require('../datadict/enums/UserEnums');
 
 exports.register = async (req, res) => {
   try {
@@ -16,7 +17,7 @@ exports.register = async (req, res) => {
       return res.status(400).json({ errno: 30001, errormsg: "用户已经存在" });
     }
 
-    await User.create({ phone, password });
+    await User.create({ phone, password,status:UserStatus.ACTIVE });
     res.json({ errno: 0, errormsg: "注册成功" });
   } catch (error) {
     logger.error('注册失败', { error });
