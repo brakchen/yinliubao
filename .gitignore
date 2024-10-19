@@ -2,7 +2,7 @@ ylb-backend/logs/*
 ylb-backend/node_modules
 ylb-backend/package-lock.json
 ylb-backend/pnpm-lock.yaml
-
+ylb-backend/logs
 
 ylb-frontend/node_modules
 ylb-frontend/package-lock.json
