@@ -15,9 +15,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'
-import { useStore } from 'vuex'
 import { ElMessage } from 'element-plus'
 import { FormInstance, FormRules } from 'element-plus'
+import { useUserStore } from '../stores/user'
 
 interface LoginForm {
   phone: string;
@@ -27,7 +27,7 @@ interface LoginForm {
 export default defineComponent({
   name: 'Login',
   setup() {
-    const store = useStore()
+    const userStore = useUserStore()
     const loginForm = reactive<LoginForm>({
       phone: '',
       password: ''
@@ -63,16 +63,15 @@ export default defineComponent({
 
     const submitForm = (formName: string) => {
       if (!loginFormRef.value) return
-      loginFormRef.value.validate((valid: boolean) => {
+      loginFormRef.value.validate(async (valid: boolean) => {
         if (valid) {
-          store.dispatch('login', loginForm)
-            .then(() => {
-              ElMessage.success('登录成功')
-              // 跳转到首页或其他页面
-            })
-            .catch((error: Error) => {
-              ElMessage.error(error.message || '登录失败')
-            })
+          try {
+            await userStore.login(loginForm)
+            ElMessage.success('登录成功')
+            // 跳转到首页或其他页面
+          } catch (error) {
+            ElMessage.error((error as Error).message || '登录失败')
+          }
         } else {
           console.log('error submit!!')
           return false

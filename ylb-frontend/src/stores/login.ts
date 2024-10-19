@@ -1,50 +1,39 @@
-import { createStore } from 'vuex'
+import { defineStore } from 'pinia'
 import axios from 'axios'
 
-interface State {
-  token: string;
+interface UserState {
+  token: string
 }
 
-interface LoginCredentials {
-  phone: string;
-  password: string;
-}
-
-export default createStore<State>({
-  state: {
+export const useUserStore = defineStore('user', {
+  state: (): UserState => ({
     token: localStorage.getItem('token') || ''
-  },
-  mutations: {
-    setToken(state, token: string) {
-      state.token = token
-      localStorage.setItem('token', token)
-    },
-    clearToken(state) {
-      state.token = ''
-      localStorage.removeItem('token')
-    }
-  },
-  actions: {
-    login({ commit }, credentials: LoginCredentials) {
-      return new Promise<void>((resolve, reject) => {
-        axios.post('/api/users/login', credentials)
-          .then(response => {
-            const { token } = response.data
-            commit('setToken', token)
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-            resolve()
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
-    },
-    logout({ commit }) {
-      commit('clearToken')
-      delete axios.defaults.headers.common['Authorization']
-    }
-  },
+  }),
   getters: {
     isLoggedIn: (state) => !!state.token
+  },
+  actions: {
+    setToken(token: string) {
+      this.token = token
+      localStorage.setItem('token', token)
+    },
+    clearToken() {
+      this.token = ''
+      localStorage.removeItem('token')
+    },
+    async login(credentials: { phone: string; password: string }) {
+      try {
+        const response = await axios.post('/api/users/login', credentials)
+        const { token } = response.data
+        this.setToken(token)
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      } catch (error) {
+        throw error
+      }
+    },
+    logout() {
+      this.clearToken()
+      delete axios.defaults.headers.common['Authorization']
+    }
   }
 })
