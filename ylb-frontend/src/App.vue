@@ -1,7 +1,7 @@
 
 <template>
   <div id="app">
-    <router-view></router-view>
+    <RouterView />
   </div>
 </template>
 
@@ -10,5 +10,9 @@ import { RouterView } from 'vue-router'
 </script>
 
 <style scoped>
-
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 </style>

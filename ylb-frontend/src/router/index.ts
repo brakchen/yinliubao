@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Layout from '../components/Layout/Index.vue'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 
@@ -8,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView,
+    component: Layout,
     meta:{
       needAuth: true
     }
