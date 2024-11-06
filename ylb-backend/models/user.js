@@ -1,8 +1,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const { UserStatus } = require('../datadict/enums/UserEnums');
 
 // 定义用户模型
 const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   phone: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -13,12 +19,17 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM('有效', '失效'),
-    defaultValue: '有效',
+    type: DataTypes.ENUM(0, 1),
+    defaultValue: UserStatus.INACTIVE ,
   },
 }, {
   timestamps: true, // 自动添加 createdAt 和 updatedAt 字段
+  tableName: 'users',
+  updatedAt: 'updated_at', // 更新时间,重定义时间命名
+  createdAt: 'created_at', // 创建时间,重定义时间命名
 });
+
+
 
 module.exports = User;
 

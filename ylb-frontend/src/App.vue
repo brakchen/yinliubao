@@ -7,9 +7,6 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-export default {
-  name: 'App',
-}
 </script>
 
 <style scoped>

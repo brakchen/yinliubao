@@ -21,19 +21,11 @@ export const useUserStore = defineStore('user', {
       this.token = ''
       localStorage.removeItem('token')
     },
-    async login(credentials: { phone: string; password: string }) {
-      try {
-        const response = await axios.post('/api/users/login', credentials)
-        const { token } = response.data
-        this.setToken(token)
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      } catch (error) {
-        throw error
-      }
-    },
     logout() {
       this.clearToken()
       delete axios.defaults.headers.common['Authorization']
     }
   }
 })
+
+

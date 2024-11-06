@@ -1,11 +1,11 @@
 <template>
-  <el-text class="mx-1" size="large">登录</el-text>
-  <el-form :model="loginForm" status-icon :rules="rules" label-width="100px" class="login-form">
+  <el-text class="mx-1" size="large">注册</el-text>
+  <el-form :model="registerForm" status-icon :rules="rules" label-width="100px" class="login-form">
     <el-form-item label="手机号" prop="phone">
-      <el-input v-model="loginForm.phone"></el-input>
+      <el-input v-model="registerForm.phone"></el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
+      <el-input type="password" v-model="registerForm.password" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm">登录</el-button>
@@ -16,15 +16,16 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-import { login } from '@/apis/user';
 import { useRouter } from 'vue-router';
-interface LoginForm {
+import { ElMessage } from 'element-plus'
+import { register } from '@/apis/user';
+
+interface RegisterForm {
   phone: string;
   password: string;
 }
 
-const loginForm = reactive<LoginForm>({
+const registerForm = reactive<RegisterForm>({
   phone: '',
   password: ''
 })
@@ -55,31 +56,29 @@ const validatePass = (rule: any, value: string, callback: any) => {
 //   password: [{ validator: validatePass, trigger: 'blur' }]
 // })
 const router = useRouter()
-
 const submitForm = () => {
   const {
     phone,
     password
-  } = loginForm
-  login({ phone, password }).then((res) => {
+  } = registerForm
+  register({ phone, password }).then((res) => {
     console.log('res: ', res)
     const { errno, errmsg } = res || {}
     if(errno === 0){
-      //否则就跳到默认的首页
+      ElMessage.success('注册成功')
       router.push({
-          name: 'Home'
+          name: 'Login'
         })
-      ElMessage.success('登录成功')
     }else{
-      ElMessage.error(errmsg || '登录失败')
+      ElMessage.error(errmsg || '注册失败')
     }
     }).catch((error) => {
-      ElMessage.error((error as Error).message || '登录异常')
+      ElMessage.error((error as Error).message || '注册异常')
     })
 }
 
 const resetForm = () => {
-  loginForm.phone = ''
-  loginForm.password = ''
+  registerForm.phone = ''
+  registerForm.password = ''
 }
 </script>

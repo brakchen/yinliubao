@@ -3,25 +3,24 @@ const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
 const { UserStatus } = require('../datadict/enums/UserEnums');
 const ErrorNoEnums = require('../datadict/enums/errorNoEnums');
+const { hashPassword, validatePassword } = require('../utils/userUtils');
+
 exports.register = async (req, res) => {
   let resData = ErrorNoEnums.SUCCESS;
   try {
     const { phone, password } = req.body;
-    
-    // 验证手机号和密码，前端验证
-    // if (!isValidPhone(phone) || !isValidPassword(password)) {
-    //   return res.status(400).json({ errno: 30003, errormsg: "无效的手机号或密码" });
-    // }
 
     const existingUser = await User.findOne({ where: { phone } });
     if (existingUser) {
       resData  = ErrorNoEnums.USER_ALREADY_EXISTS;
     }
+    const hashedPassword = await hashPassword(password);
 
-    await User.create({ phone, password,status:UserStatus.ACTIVE });
+    const res = await User.create({ phone, password:hashedPassword,status:UserStatus.ACTIVE });
+    logger.info(`注册成功 ${res}`);
   } catch (error) {
     resData = ErrorNoEnums.UNEXPECTED_ERROR;
-    logger.error('注册失败', { error });
+    logger.error(`注册失败 ${error.message}`);
   }finally{
     res.json(resData);
   }
@@ -31,20 +30,27 @@ exports.login = async (req, res) => {
   let resData = ErrorNoEnums.SUCCESS;
   try {
     const { phone, password } = req.body;
-    const user = await User.findByPhone(phone);
+    logger.info(`login request ${phone} ${password} `);
+    await User.findOne({ where: { phone : phone } }).then(user => {
+      logger.info('user: %s', JSON.stringify(user))
+      if (!user) {
+        return res.json(ErrorNoEnums.USER_NOT_FOUND);
+      }
 
-    if (!user || !(await User.validatePassword(user, password))) {
-      resData = ErrorNoEnums.LOGIN_FAILED;
-    }
+      if (!validatePassword(user, password)) {
+        return res.json(ErrorNoEnums.INVALID_PHONE_OR_PASSWORD);
+      }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    resData = ErrorNoEnums.LOGIN_SUCCESS;
-    resData.token = token;
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      resData = ErrorNoEnums.LOGIN_SUCCESS;
+      resData.token = token;
+      return  res.json(resData);
+    }).catch(error => {
+      logger.error(`登录失败 ${error.message}`);
+      return res.json( ErrorNoEnums.UNEXPECTED_ERROR);
+    })
   } catch (error) {
-    logger.error('登录失败', { error });
-    resData = ErrorNoEnums.UNEXPECTED_ERROR;
-  }finally{
-    res.json(resData);
+
   }
 };
 

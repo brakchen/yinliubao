@@ -34,7 +34,7 @@ const logger = winston.createLogger({
   ),
   transports: [
     businessTransport,
-    errorTransport
+    errorTransport,
   ]
 });
 

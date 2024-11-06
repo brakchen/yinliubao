@@ -2,16 +2,26 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const path = require('path');
 
+
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
-const myFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} ${level}: ${stack || message}`;
-});
+const myFormat = combine(
+  colorize(),
+  timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  printf(({ level, message, timestamp, stack, meta }) => {
+      // 如果有额外的参数（如 meta），则将其追加到日志消息中
+      let logMessage = `${timestamp} ${level}: ${stack || message}`;
+      if (meta && Object.keys(meta).length > 0) {
+          logMessage += ` ${JSON.stringify(meta)}`;
+      }
+      return logMessage;
+  })
+);
 
 const businessTransport = new winston.transports.DailyRotateFile({
   filename: path.join(__dirname, '../logs/business-%DATE%.log'),
   datePattern: 'YYYY-MM-DD-HH',
-  zippedArchive: true,
+  zippedArchive: false,
   maxSize: '20m',
   maxFiles: '14d',
   level: 'info'
@@ -20,10 +30,10 @@ const businessTransport = new winston.transports.DailyRotateFile({
 const errorTransport = new winston.transports.DailyRotateFile({
   filename: path.join(__dirname, '../logs/error-%DATE%.log'),
   datePattern: 'YYYY-MM-DD-HH',
-  zippedArchive: true,
+  zippedArchive: false,
   maxSize: '20m',
   maxFiles: '14d',
-  level: 'error'
+  level: 'error',
 });
 
 const logger = winston.createLogger({
