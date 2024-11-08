@@ -5,10 +5,11 @@ function validatePassword(user, password) {
     return bcrypt.compare(password, user.password);
 }
 
-async function hashPassword(password) {
+function hashPassword(password) {
     const saltRounds = 10; // 通常在 10 和 12 之间
-    const salt = await bcrypt.genSalt(saltRounds);
-    return bcrypt.hash(password, salt);
+    return bcrypt.genSalt(saltRounds).then(salt => {
+        return bcrypt.hash(password, salt);
+    });
 }
 
 module.exports = {

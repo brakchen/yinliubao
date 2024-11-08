@@ -31,6 +31,14 @@ const ErrorNoEnums = Object.freeze({
       errno: 30004,
       errmsg: "用户不存在"
     },
+    REGISTER_FAILED: {
+      errno: 30005,
+      errmsg: "注册失败"
+    },
+    VALIDATE_USER_FAILED: {
+      errno: 30006,
+      errmsg: "校验用户信息失败"
+    },
     // 可以继续添加更多错误码和对应的中文描述
   });
   

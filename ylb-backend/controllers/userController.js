@@ -6,24 +6,30 @@ const ErrorNoEnums = require('../datadict/enums/errorNoEnums');
 const { hashPassword, validatePassword } = require('../utils/userUtils');
 
 exports.register = async (req, res) => {
-  let resData = ErrorNoEnums.SUCCESS;
-  try {
-    const { phone, password } = req.body;
 
-    const existingUser = await User.findOne({ where: { phone } });
-    if (existingUser) {
-      resData  = ErrorNoEnums.USER_ALREADY_EXISTS;
+  const { phone, password } = req.body;
+  await User.findOne({ where: { phone: phone } }).then(user => {
+    logger.info('register existingUser: %s',JSON.stringify(user));
+    if (user) {
+      res.json(ErrorNoEnums.USER_ALREADY_EXISTS);
+    }else{
+      hashPassword(password).then(hashedPassword => {
+        logger.info('register hashedPassword: %s',hashedPassword);
+        User.create({ phone, password:hashedPassword,status:UserStatus.ACTIVE }).then(user => {
+          logger.info('register user: %s',JSON.stringify(user));
+          resData = ErrorNoEnums.SUCCESS;
+          res.json(resData);
+        }).catch(error => {
+          logger.error('register save failed %s',error.message);
+          res.json( ErrorNoEnums.REGISTER_FAILED);
+        });
+      });
     }
-    const hashedPassword = await hashPassword(password);
+  }).catch(error => {
+    logger.error('query user failed %s',error.message);
+    res.json( ErrorNoEnums.VALIDATE_USER_FAILED);
+  });
 
-    const res = await User.create({ phone, password:hashedPassword,status:UserStatus.ACTIVE });
-    logger.info(`注册成功 ${res}`);
-  } catch (error) {
-    resData = ErrorNoEnums.UNEXPECTED_ERROR;
-    logger.error(`注册失败 ${error.message}`);
-  }finally{
-    res.json(resData);
-  }
 };
 
 exports.login = async (req, res) => {

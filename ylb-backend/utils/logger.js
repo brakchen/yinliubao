@@ -3,11 +3,12 @@ require('winston-daily-rotate-file');
 const path = require('path');
 
 
-const { combine, timestamp, printf, colorize, errors } = winston.format;
+const { combine, timestamp, printf, colorize, errors,splat } = winston.format;
 
 const myFormat = combine(
   colorize(),
   timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  splat(),
   printf(({ level, message, timestamp, stack, meta }) => {
       // 如果有额外的参数（如 meta），则将其追加到日志消息中
       let logMessage = `${timestamp} ${level}: ${stack || message}`;
