@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
         return res.json(ErrorNoEnums.INVALID_PHONE_OR_PASSWORD);
       }
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       resData = ErrorNoEnums.LOGIN_SUCCESS;
       resData.token = token;
       return  res.json(resData);
@@ -58,5 +58,11 @@ exports.login = async (req, res) => {
   } catch (error) {
 
   }
+};
+
+
+
+exports.getProfile = async (req, res) => {
+  res.json(ErrorNoEnums.SUCCESS);
 };
 
