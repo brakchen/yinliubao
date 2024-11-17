@@ -39,6 +39,10 @@ const ErrorNoEnums = Object.freeze({
       errno: 30006,
       errmsg: "校验用户信息失败"
     },
+    INVALID_TOKEN: {
+      errno: 401,
+      errmsg: "无效的token"
+    },
     // 可以继续添加更多错误码和对应的中文描述
   });
   

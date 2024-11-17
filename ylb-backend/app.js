@@ -13,7 +13,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const errorHandler = require('./middleware/errorHandler');
-
+const verifyToken = require('./middleware/authMiddleware');
 
 
 var app = express();
@@ -29,7 +29,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(errorHandler);
-
+// 验证token
+app.use(verifyToken);
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 
