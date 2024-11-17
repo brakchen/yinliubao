@@ -43,6 +43,10 @@ const ErrorNoEnums = Object.freeze({
       errno: 401,
       errmsg: "无效的token"
     },
+    EXPIRED_TOKEN: {
+      errno: 401,
+      errmsg: "token已过期"
+    },
     // 可以继续添加更多错误码和对应的中文描述
   });
   
