@@ -8,9 +8,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var shortLinkRouter = require('./routes/shortLink');
 
 const errorHandler = require('./middleware/errorHandler');
 
@@ -32,6 +32,7 @@ app.use(errorHandler);
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/shortLink', shortLinkRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

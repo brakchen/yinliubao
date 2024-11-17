@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
         logger.info('register hashedPassword: %s',hashedPassword);
         User.create({ phone, password:hashedPassword,status:UserStatus.ACTIVE }).then(user => {
           logger.info('register user: %s',JSON.stringify(user));
-          resData = ErrorNoEnums.SUCCESS;
+          let resData = ErrorNoEnums.SUCCESS;
           res.json(resData);
         }).catch(error => {
           logger.error('register save failed %s',error.message);

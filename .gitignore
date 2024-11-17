@@ -7,3 +7,4 @@ ylb-backend/.env
 ylb-frontend/node_modules
 ylb-frontend/package-lock.json
 ylb-frontend/pnpm-lock.yaml
+.idea
