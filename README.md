@@ -3,6 +3,7 @@ Nodejs v20+
 Expressjs 5.x
 Redis 7.1+
 Mysql 5.7
+[Vben Admin](https://vben.pro/) 
 
 
 # 项目结构
@@ -41,8 +42,14 @@ $env:DEBUG='myapp:*';
 nodemon
 
 # 前端
-npm run dev
-
+# 进入项目目录
+#Node.js 20.15.0 及以上版本，推荐使用 fnm 、 nvm 或者直接使用pnpm 进行版本管理。
+# 使用项目指定的pnpm版本进行依赖安装
+corepack enable
+# 安装依赖
+pnpm install
+# 运行
+pnpm dev:ele
 ```
 
 ### 开发环境变量配置

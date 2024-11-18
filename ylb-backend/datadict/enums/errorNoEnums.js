@@ -1,59 +1,59 @@
 const ErrorNoEnums = Object.freeze({
     SUCCESS: {
-        errno: 0,
-        errmsg: "成功"
+        code: 0,
+        message: "成功"
     },
     UNEXPECTED_ERROR: {
-        errno: 20001,
-        errmsg: "未预期的错误"
+        code: 20001,
+        message: "未预期的错误"
     },
     USER_ALREADY_EXISTS: {
-        errno: 30001,
-        errmsg: "用户已经存在"
+        code: 30001,
+        message: "用户已经存在"
     },
     LOGIN_FAILED: {
-        errno: 30002,
-        errmsg: "登录失败"
+        code: 30002,
+        message: "登录失败"
     },
     INVALID_PHONE_OR_PASSWORD: {
-        errno: 30003,
-        errmsg: "无效的手机号或密码"
+        code: 30003,
+        message: "无效的手机号或密码"
     },
     API_NOT_FOUND: {
-        errno: 404,
-        errmsg: "接口不存在"
+        code: 404,
+        message: "接口不存在"
     },
     LOGIN_SUCCESS: {
-        errno: 0,
-        errmsg: "登录成功"
+        code: 0,
+        message: "登录成功"
     },
     USER_NOT_FOUND: {
-        errno: 30004,
-        errmsg: "用户不存在"
+        code: 30004,
+        message: "用户不存在"
     },
     REGISTER_FAILED: {
-        errno: 30005,
-        errmsg: "注册失败"
+        code: 30005,
+        message: "注册失败"
     },
     VALIDATE_USER_FAILED: {
-        errno: 30006,
-        errmsg: "校验用户信息失败"
+        code: 30006,
+        message: "校验用户信息失败"
     },
     INVALID_URL: {
-        errno: 40001,
-        errmsg: "无效url"
+        code: 40001,
+        message: "无效url"
     },
     SERVER_INTERNAL_ERROR: {
-        errno: 5001,
-        errmsg: "系统错误"
+        code: 5001,
+        message: "系统错误"
     },
     INVALID_TOKEN: {
-      errno: 401,
-      errmsg: "无效的token"
+      code: 401,
+      message: "无效的token"
     },
     EXPIRED_TOKEN: {
-      errno: 401,
-      errmsg: "token已过期"
+      code: 401,
+      message: "token已过期"
     },
     // 可以继续添加更多错误码和对应的中文描述
 });

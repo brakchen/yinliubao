@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const logger = require('./middleware/logger');
 const cors = require('cors');
@@ -10,7 +9,7 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 const ErrorNoEnums = require('./datadict/enums/errorNoEnums');
 
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes');
 var usersRouter = require('./routes/users');
 var externalRouter = require('./routes/external');
 var shortLinkRouter = require('./routes/shortLink');
@@ -34,7 +33,7 @@ app.use(jwt({
   secret: process.env.JWT_SECRET,
   algorithms: ['HS256'],
   onExpired: function(req, res, next){
-    return res.json(ErrorNoEnums.EXPIRED_TOKEN);
+    return res.json=ErrorNoEnums.EXPIRED_TOKEN ;
   }
 }).unless({
   path: [

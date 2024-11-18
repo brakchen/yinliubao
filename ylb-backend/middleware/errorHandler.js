@@ -1,4 +1,4 @@
-const logger = require('../middleware/logger');
+const logger = require('./logger');
 const ErrorNoEnums = require('../datadict/enums/errorNoEnums');
 function errorHandler(err, req, res, next) {
   logger.error(err.stack);
