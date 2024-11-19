@@ -49,7 +49,7 @@ corepack enable
 # 安装依赖
 pnpm install
 # 运行
-pnpm dev:ele
+pnpm dev:antd
 ```
 
 ### 开发环境变量配置
