@@ -17,8 +17,7 @@ exports.parse = async (req, res) => {
     }
   }).catch(error => {
     logger.error('query user failed %s',error.message);
-    res.statusCode = 500
-    res.send("not found")
+    res.statusCode(500);
   });
 
 };
