@@ -3,6 +3,7 @@ const DataStatusEnums = Object.freeze({
   INACTIVE: 1,
   //冻结
   FREEZE:  2,
+  AUDIT: 3
 });
 
 module.exports = DataStatusEnums;

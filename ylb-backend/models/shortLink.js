@@ -23,7 +23,7 @@ const ShortLink = sequelize.define('ShortLink', {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM(0, 1, 2),
+    type: DataTypes.ENUM(Object.values(DataStatusEnums)),
     defaultValue: DataStatusEnums.INACTIVE,
   },
 }, {
