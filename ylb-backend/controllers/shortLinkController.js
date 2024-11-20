@@ -49,7 +49,7 @@ exports.queryList = async (req, res) => {
 exports.generate = async (req, res) => {
     const {originUrl, shortDomain} = req.body;
     const userId = req.auth.userId;
-    if (validUrl.isUri(originUrl)) {
+    if (validUrl.isWebUri(originUrl)) {
         try {
             let shortLink = await ShortLink.findOne({where: {origin_url: originUrl}});
             if (shortLink && shortLink.status !== DataStatusEnums.FREEZE) {
@@ -66,8 +66,8 @@ exports.generate = async (req, res) => {
                 await ShortLink.create({
                     short_url: shortDomain === '' ? process.env.SHORT_LINK_BASE_URL + "/" + shortUrl : shortDomain + "/" + shortUrl,
                     origin_url: originUrl,
-                    user_id: userId.id,
-                    status: DataStatusEnums.ACTIVE
+                    user_id: req.auth.userId,
+                    status: DataStatusEnums.AUDIT
                 })
                 res.json({
                     ...ErrorNoEnums.SUCCESS,

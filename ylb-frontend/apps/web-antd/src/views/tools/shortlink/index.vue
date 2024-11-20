@@ -1,32 +1,20 @@
 <script lang="ts" setup>
-import type { ShortLinkTableApi } from '#/adapter/table';
+import type { ShortLinkTableApi } from '#/adapter/short-link-table';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben-core/popup-ui';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getShortLinkList } from '#/adapter/table';
+import {
+  generateShortLink,
+  getShortLinkList,
+} from '#/adapter/short-link-table';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import ExtraModal from './modal.vue';
-
-const isShow = ref(false);
-
-const hide = () => {
-  isShow.value = false;
-};
-
-const show = () => {
-  isShow.value = true;
-};
-
-const visible = computed(() => {
-  return isShow.value;
-});
 interface RowType {
   category: string;
   color: string;
@@ -35,6 +23,7 @@ interface RowType {
   productName: string;
   releaseDate: string;
 }
+const [Modal, modalApi] = useVbenModal({ footer: false });
 
 /**
  * 获取示例表格数据
@@ -49,7 +38,66 @@ async function getExampleTableApi(params: ShortLinkTableApi.PageFetchParams) {
     });
   });
 }
+function onSubmit(params: ShortLinkTableApi.GenerateParams) {
+  generateShortLink(params).then(() => {
+    message.success('生成成功，待审核');
+    modalApi.close();
+  });
+}
+function statusSwitch({ cellValue }) {
+  switch (cellValue) {
+    case 0: {
+      return '生效';
+    }
+    case 1: {
+      return '无效';
+    }
+    case 2: {
+      return '冻结';
+    }
+    case 3: {
+      return '审核中';
+    }
+    default: {
+      return 'N/A';
+    }
+  }
+}
+const gridOptions: VxeGridProps<RowType> = {
+  checkboxConfig: {
+    highlight: true,
+    labelField: 'name',
+  },
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'short_url', title: '短链接' },
+    { field: 'origin_url', title: '长连接' },
+    { field: 'status', title: '状态', formatter: statusSwitch },
+    { field: 'created_at', title: '创建时间' },
 
+    // { field: 'releaseDate', formatter: 'formatDateTime', title: 'DateTime' },
+  ],
+  exportConfig: {},
+  // height: 'auto', // 如果设置为 auto，则必须确保存在父节点且不允许存在相邻元素，否则会出现高度闪动问题
+  keepSource: true,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await getExampleTableApi({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    export: true,
+    // import: true,
+    refresh: true,
+    zoom: true,
+  },
+};
 const [BaseForm] = useVbenForm({
   // 所有表单项共用，可单独在表单内覆盖
   commonConfig: {
@@ -93,75 +141,23 @@ const [BaseForm] = useVbenForm({
   ],
   wrapperClass: 'grid-cols-1',
 });
-
-function onSubmit(values: Record<string, any>) {
-  message.success({
-    content: `form values: ${JSON.stringify(values)}`,
-  });
-}
-
-const [Modal, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: ExtraModal,
-});
-
-const gridOptions: VxeGridProps<RowType> = {
-  checkboxConfig: {
-    highlight: true,
-    labelField: 'name',
-  },
-  columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { align: 'left', title: 'Name', type: 'checkbox', width: 100 },
-    { field: 'short_url', title: '短链接' },
-    { field: 'origin_url', title: '长连接' },
-    { field: 'status', title: '状态' },
-    { field: 'created_at', title: '创建时间' },
-
-    // { field: 'releaseDate', formatter: 'formatDateTime', title: 'DateTime' },
-  ],
-  exportConfig: {},
-  // height: 'auto', // 如果设置为 auto，则必须确保存在父节点且不允许存在相邻元素，否则会出现高度闪动问题
-  keepSource: true,
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }) => {
-        return await getExampleTableApi({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
-      },
-    },
-  },
-  toolbarConfig: {
-    custom: true,
-    export: true,
-    // import: true,
-    refresh: true,
-    zoom: true,
-  },
-};
-
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
-function openModal() {
-  modalApi.open();
-}
-function handleUpdateTitle() {
-  modalApi.setState({ title: '外部动态标题' });
-  modalApi.open();
-}
 </script>
 
 <template>
   <div class="vp-raw w-full">
-    <Modal />
-    <Button class="mr-2" type="primary" @click="openModal">
-      新建
-    </Button>
+    <Modal>
+      <div class="flex-col-center">
+        <BaseForm />
+      </div>
+    </Modal>
     <Grid>
       <template #toolbar-tools>
+        <Button class="mr-2" type="primary" @click="() => modalApi.open()">
+          新建
+        </Button>
         <Button class="mr-2" type="primary" @click="() => gridApi.query()">
           刷新当前页面
         </Button>

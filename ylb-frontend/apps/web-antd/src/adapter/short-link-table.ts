@@ -6,6 +6,11 @@ export namespace ShortLinkTableApi {
     page: number;
     pageSize: number;
   }
+  export interface GenerateParams {
+    [key: string]: any;
+    originUrl: string;
+    shortDomain: string;
+  }
 }
 
 /**
@@ -15,4 +20,11 @@ async function getShortLinkList(params: ShortLinkTableApi.PageFetchParams) {
   return requestClient.get('/shortLink/list', { params });
 }
 
-export { getShortLinkList };
+/**
+ * 获取示例表格数据
+ */
+async function generateShortLink(params: ShortLinkTableApi.GenerateParams) {
+  return requestClient.post('/shortLink/generate', { ...params });
+}
+
+export { generateShortLink, getShortLinkList };
