@@ -4,6 +4,8 @@ const logger = require('../utils/logger');
 const { UserStatus } = require('../datadict/enums/UserEnums');
 const ErrorNoEnums = require('../datadict/enums/errorNoEnums');
 const { hashPassword, validatePassword } = require('../utils/userUtils');
+const roles = require('../models/roles');
+const redis = require('../config/redis');
 
 exports.register = async (req, res) => {
 
@@ -46,6 +48,20 @@ exports.login = async (req, res) => {
       if (!validatePassword(user, password)) {
         return res.json(ErrorNoEnums.INVALID_PHONE_OR_PASSWORD);
       }
+      //查询用户的权限和资源
+      roles.findAll({where:{user_id:user.id}}).then(roles => {
+        try{
+          let roleNames = roles.map(role => role.name);
+          redis.set(`user_roles:${user.id}`,roleNames);
+          roles.forEach(role => {
+            let resources = JSON.parse(role.resources);
+            let permissions = JSON.parse(role.permissions);
+            acl.allow([role.name], resources, permissions);
+          });
+        }catch(error){
+          throw new Error('parse roles failed %s',error.message);
+        }
+      });
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 

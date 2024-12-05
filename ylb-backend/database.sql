@@ -26,3 +26,23 @@ CREATE TABLE short_link (
     KEY `idx_short_url` (`short_url`),
     KEY `idx_origin_url` (`origin_url`)
 ) COMMENT '短链表';
+
+
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色id,主键',
+  `user_id` int(11) NOT NULL DEFAULT 0 COMMENT '用户id',
+  `resource` text COLLATE utf8mb4_unicode_ci  COMMENT '资源,json 数组',
+  `permission` text COLLATE utf8mb4_unicode_ci COMMENT '权限,json 数组',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '角色名',
+  PRIMARY KEY (`id`)
+);
+CREATE TABLE `user_role_bind` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户角色绑定id,主键',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `role_id` int(11) NOT NULL COMMENT '角色id',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+);

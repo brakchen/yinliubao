@@ -43,6 +43,65 @@ app.use(jwt({
     {url:'/api/users/register',method:['GET','POST']}
   ]
 }));
+//权限校验
+const acl = require('acl');
+const aclInstance = new acl(new acl.redisBackend(redis,
+  'acl:'
+));
+//定义角色和资源
+// const roles = {
+//   admin:['admin'],
+//   user:['user']
+// };
+// const resources = {
+//   admin: {
+//     resources: ['/api/users', '/api/shortLink'],
+//     permissions: ['create', 'read', 'update', 'delete']
+//   },
+//   user: {
+//     resources: ['/api/shortLink'],
+//     permissions: ['read']
+//   }
+// };
+//初始化acl
+// acl.allow(roles.admin,resources.admin.resources,resources.admin.permissions);
+// acl.allow(roles.user,resources.user.resources,resources.user.permissions);
+
+// 用户认证中间件
+async function authMiddleware(req, res, next) {
+  const userId = req.auth.userId;  
+  if (!userId){
+    return res.status(403).send('User not authenticated');
+  }
+  //根据token获取用户的角色和资源
+
+  // 获取用户角色
+  redis.smembers(`user_roles:${userId}`, async (err, roleNames) => {
+    if (err || roleNames.length === 0) return res.status(403).send('User roles not found');
+    const allAllowed = roleNames.every(roleName => {
+      return acl.isAllowed(roleName, req.originalUrl, req.method);
+    });
+    if (allAllowed) {
+      next();
+    } else {
+      res.status(403).send('Permission denied');
+    }
+
+  });
+
+
+  aclInstance.isAllowed(userId, req.originalUrl, req.method, (err, allowed) => {
+    if (err){
+      return res.status(403).send('User roles not found');
+    } 
+    if (allowed) {
+      next();
+    } else {
+      return res.status(403).send('Permission denied');
+    }
+  });
+}
+app.use(authMiddleware);
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/shortLink', shortLinkRouter);
