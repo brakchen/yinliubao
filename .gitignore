@@ -4,7 +4,46 @@ ylb-backend/package-lock.json
 ylb-backend/pnpm-lock.yaml
 ylb-backend/logs
 ylb-backend/.env
+ylb-backend/.mvn
+ylb-backend/.idea
+ylb-backend/mvnw*
 ylb-frontend/node_modules
 ylb-frontend/package-lock.json
 ylb-frontend/pnpm-lock.yaml
 .idea
+
+
+
+ylb-backend/HELP.md
+ylb-backend/target/
+ylb-backend/!.mvn/wrapper/maven-wrapper.jar
+ylb-backend/!**/src/main/**/target/
+ylb-backend/!**/src/test/**/target/
+
+### STS ###
+ylb-backend/.apt_generated
+ylb-backend/.classpath
+ylb-backend/.factorypath
+ylb-backend/.project
+ylb-backend/.settings
+ylb-backend/.springBeans
+ylb-backend/.sts4-cache
+
+### IntelliJ IDEA ###
+ylb-backend/.idea
+ylb-backend/*.iws
+ylb-backend/*.iml
+ylb-backend/*.ipr
+
+### NetBeans ###
+ylb-backend/nbproject/private/
+ylb-backend/nbbuild/
+ylb-backend/dist/
+ylb-backend/nbdist/
+ylb-backend/.nb-gradle/
+ylb-backend/build/
+ylb-backend/!**/src/main/**/build/
+ylb-backend/!**/src/test/**/build/
+
+### VS Code ###
+ylb-backend/.vscode/
