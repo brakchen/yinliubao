@@ -2,12 +2,14 @@ package com.ylb.ylbbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ylb.ylbbackend.domain.request.LoginRequest;
+import com.ylb.ylbbackend.domain.request.RegisterRequest;
+import com.ylb.ylbbackend.domain.response.Response;
+import com.ylb.ylbbackend.domain.response.user.LoginResponse;
 import com.ylb.ylbbackend.service.UserService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -21,5 +23,31 @@ public class UserController {
     public String findAll() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(userService.findAll());
+    }
+
+
+
+
+
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @ResponseBody
+    public Response<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        return userService.login(request);
+
+    }
+
+
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
+    @ResponseBody
+    public Response<Void> register(RegisterRequest request){
+       return userService.register(request);
+    }
+
+
+    @RequestMapping(value = "/logout",method = RequestMethod.POST)
+    @ResponseBody
+    public Response<Void> logout() {
+        return userService.logout();
+
     }
 }
