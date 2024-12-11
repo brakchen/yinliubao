@@ -39,7 +39,7 @@ public class UserController {
 
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
-    public Response<Void> register(RegisterRequest request){
+    public Response<Void> register(@RequestBody @Valid RegisterRequest request){
        return userService.register(request);
     }
 

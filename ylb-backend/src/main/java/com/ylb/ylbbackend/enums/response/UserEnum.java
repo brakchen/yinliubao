@@ -4,6 +4,7 @@ public enum UserEnum implements ErrorEnum {
     USER_EXIST(601,"用户已存在"),
     USER_NOT_EXIST(602,"用户名不存在"),
     PASSWORD_INCORRECT(603,"密码错误"),
+    LOGIN_FAIL(604,"登录失败"),
 
 
     ;
