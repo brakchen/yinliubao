@@ -47,3 +47,5 @@ ylb-backend/!**/src/test/**/build/
 
 ### VS Code ###
 ylb-backend/.vscode/
+logs
+logs/*
