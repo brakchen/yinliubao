@@ -1,0 +1,11 @@
+spring:
+  web:
+    resources:
+      add-mappings: 'false'
+server:
+  servlet:
+    context-path: /ylb
+  port: 9011
+logging:
+  config: classpath:logback-spring.xml
+
