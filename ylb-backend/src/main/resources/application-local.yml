@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      max-lifetime: 900000
+      idle-timeout: 600000
+      keepaliveTime: 120000
+      connection-timeout: 30000
+      pool-name: DatebookHikariCP
+      auto-commit: true
+      validation-timeout: 3000
+#    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ylb
+    url: jdbc:mysql://101.43.176.206:3306/ylb?&useUnicode=true&useAffectedRows=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&verifyServerCertificate=false&autoReconnct=true&autoReconnectForPools=true&allowMultiQueries=true
+  data:
+    redis:
+      host: 101.43.176.206
+      port: 6379
+#      password: ${REDIS_PASSWORD}
+      connect-timeout: 1s
+      lettuce:
+        pool:
+          max-active: 200
+          max-idle: 10
+          max-wait: 50ms
+          min-idle: 0
+
+
+logging:
+  level:
+    org.springframework.security: debug
