@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -42,16 +44,13 @@ public class CurrentUserDetailsService implements UserDetailsService {
                 "left join fetch u.roles r " +
                 "left join fetch r.permissions p " +
                 "where u.username = :username";
-        User user =  entityManager.createQuery(hql, User.class)
+        Optional<User> user =  entityManager.createQuery(hql, User.class)
                 .setParameter("username", username)
-                .getSingleResult();
-        if(user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return new UserDetails() {
+                .getResultStream().findFirst();
+        return user.map(value -> new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                Set<Role> roles = user.getRoles();
+                Set<Role> roles = value.getRoles();
                 try {
                     log.info("roles:{}", new ObjectMapper().writeValueAsString(roles));
                 } catch (JsonProcessingException e) {
@@ -66,13 +65,13 @@ public class CurrentUserDetailsService implements UserDetailsService {
 
             @Override
             public String getPassword() {
-                return user.getPassword();
+                return value.getPassword();
             }
 
             @Override
             public String getUsername() {
-                return user.getUsername();
+                return value.getUsername();
             }
-        };
+        }).orElse(null);
     }
 }

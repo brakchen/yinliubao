@@ -8,6 +8,8 @@ import com.ylb.ylbbackend.domain.response.Response;
 import com.ylb.ylbbackend.domain.response.user.LoginResponse;
 import com.ylb.ylbbackend.repository.UsersRepository;
 import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,6 +45,9 @@ public class UserService {
     public Response<LoginResponse> login(LoginRequest loginRequest) {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        if(Objects.isNull(userDetails)){
+            return Response.error(USER_NOT_EXIST);
+        }
 
         if(!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())){
             return Response.error(PASSWORD_INCORRECT);
